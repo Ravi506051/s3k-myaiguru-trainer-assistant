@@ -1,39 +1,52 @@
 # MYAIGURU Trainer Assistant
 
-**Dedicated repository for S3K Case Study 01 / AI Education.**
+A browser-based trainer workspace for **S3K Internship 2026, Case Study 01: AI-Powered Learning Delivery & Trainer Assistant**. The prototype helps a trainer prepare lessons, review learner support suggestions, approve feedback, and inspect cohort progress.
 
-- [Live prototype](https://myaiguru-trainer-assistant-ravi.onrender.com/)
-- [Assessment PDF](S3K_Ravi_Kumar_Rao_Case_Study_01.pdf)
-- [Ravi's narrated case-study video on Google Drive](https://drive.google.com/file/d/1ov5C_jgUtOg05RPnUPmDaRI1MJnN5Jvb/view) (access granted to S3K HR)
+**[Open the live prototype](https://myaiguru-trainer-assistant-ravi.onrender.com/)** · **[Read the assessment PDF](S3K_Ravi_Kumar_Rao_Case_Study_01.pdf)** · **[Download the source ZIP](downloads/s3k-myaiguru-trainer-assistant.zip)**
 
-An interactive browser prototype and case-study package for **S3K Case 01: AI-Powered Learning Delivery & Trainer Assistant**.
+![Trainer dashboard preview](dashboard.png)
 
-## Run it
+## What you can explore
 
-Run `python server.py` from this directory, then open `http://127.0.0.1:8765/` in a modern browser. Python's standard library is the only requirement. The app creates `myaiguru_demo.sqlite3` on first launch.
+| Area | In the prototype |
+| --- | --- |
+| Overview | Cohort metrics and batch-level views |
+| Content studio | Draft a sample lesson, check it, and approve it |
+| Learners | Review masked learner check-in suggestions and draft outreach |
+| Review queue | Edit rubric-based feedback before approving it |
+| Reports | Inspect descriptive insights with their caveats |
 
-## Prototype walkthrough
+The example is based on the case brief's four-batch training scenario. All learner records and metrics in the app are fictional.
 
-1. **Overview:** inspect the cohort KPIs and switch between batches.
-2. **Content studio:** generate a sample lesson draft, review the checklist, then approve it.
-3. **Learners:** see masked check-in suggestions and draft supportive outreach.
-4. **Review queue:** edit and approve rubric-based feedback.
-5. **Reports:** review descriptive insights and their caveats.
+## Run locally
 
-The app uses fictional cohort data and masked learner examples. Its course answers are retrieved from approved sample material stored in SQLite. It does not call a generative AI model or send messages.
+You need Python 3.10 or newer. No package installation or API key is required.
 
-## Files
+```powershell
+python server.py
+```
 
-- `index.html`, `styles.css`, `app.js`: interactive trainer dashboard prototype.
-- `polish.css`, `polish.js`: responsive visual refinements, reduced-motion-aware entrance effects, hover glow and button ripple interactions.
-- `redesign.css`, `redesign.js`: earlier visual direction retained as an intermediate layer.
-- `professional.css`: current restrained, professional interface.
-- `backend.js`, `server.py`: API connection and local SQLite persistence.
-- `assessment.md`: case-study write-up covering discovery, KPIs, workflow, UI decisions, UAT and video outline.
-- `dashboard.png`: screenshot of the trainer workspace for the assessment document.
+Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/). The server creates `myaiguru_demo.sqlite3` on first launch. Stop it with Ctrl+C.
 
-## Important demo assumptions
+## Suggested walkthrough
 
-- Cohort and learner records are fictional; learner names are masked.
-- Lesson and feedback approvals are saved in SQLite with an audit record. The sample course Q&A reads approved material from the database and abstains when no match exists. It is a retrieval demonstration, not a generative model.
-- A production version would require authentication, role-based access, approved-source retrieval, audit logging, data retention and privacy review.
+1. Select a batch on **Overview** and inspect its progress.
+2. Create a lesson draft in **Content studio**, review the checklist, and approve it.
+3. Open **Learners** to inspect a masked support suggestion and draft a trainer response.
+4. Edit feedback in **Review queue** and approve it; inspect the saved review history.
+5. Ask a course question. The answer is drawn from approved sample content; unmatched questions receive an abstention.
+6. Open **Reports** to review cohort patterns and their limitations.
+
+## Project files
+
+- [Assessment PDF](S3K_Ravi_Kumar_Rao_Case_Study_01.pdf): submission-ready case study.
+- [Assessment source](assessment.md): problem, workflow, UI choices, testing approach, and video outline.
+- `server.py`: local HTTP API and SQLite persistence.
+- `index.html`, `app.js`, `backend.js`, and CSS files: trainer interface.
+- `make_assessment_pdf.py`: builds the PDF from the assessment source.
+
+## Scope and safeguards
+
+This is an interactive **prototype**, not a deployed learning management system. The course Q&A retrieves approved sample material from SQLite; it does not call a generative model. Lesson and feedback approvals are stored with an audit record, but the app has no production login or role enforcement. It does not send learner messages. A production rollout would need identity and access controls, privacy and retention policies, verified content sources, and operational review.
+
+The [narrated case-study video](https://drive.google.com/file/d/1ov5C_jgUtOg05RPnUPmDaRI1MJnN5Jvb/view) is shared separately with S3K HR; Drive access may be required.
