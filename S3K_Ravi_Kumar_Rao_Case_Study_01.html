@@ -1,0 +1,203 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><title>S3K Case Study 01 — Ravi Kumar Rao</title><style>
+@page { size:A4; margin:17mm 16mm 17mm 16mm; }
+* { box-sizing:border-box; } body { font:10.3pt/1.52 Arial,sans-serif; color:#263448; margin:0; }
+h1,h2,h3 { font-family:Arial,sans-serif; color:#233a58; page-break-after:avoid; }
+h1 { font-size:23pt; line-height:1.15; padding-bottom:10mm; border-bottom:3px solid #486c98; margin:0 0 10mm; }
+h2 { font-size:15pt; margin:9mm 0 3mm; border-bottom:1px solid #dce4ec; padding-bottom:2mm; }
+h3 { font-size:11.5pt; margin:6mm 0 2mm; }
+p { margin:0 0 3.2mm; } li { margin-bottom:1.5mm; } ul,ol { padding-left:6mm; }
+table { width:100%; border-collapse:collapse; margin:4mm 0 6mm; font-size:8.5pt; page-break-inside:avoid; }
+th,td { border:1px solid #dce4ec; padding:2mm 2.4mm; vertical-align:top; }
+th { background:#eaf0f6; color:#264566; text-align:left; } tr:nth-child(even) td { background:#fafbfd; }
+img { max-width:100%; border:1px solid #dce4ec; border-radius:5px; margin:3mm 0 5mm; }
+code { font:9pt Consolas,monospace; background:#edf2f7; padding:1px 3px; overflow-wrap:anywhere; }
+a { color:#315b8b; overflow-wrap:anywhere; } blockquote { border-left:3px solid #8fa9c3; margin:4mm 0; padding-left:4mm; }
+</style></head><body><h1>MYAIGURU — AI-Powered Learning Delivery &amp; Trainer Assistant</h1>
+<p><strong>Prepared by:</strong> Ravi Kumar Rao<br />
+<strong>Application email:</strong> ravikumarrao457@gmail.com<br />
+<strong>Candidate case study 01 · Fictional four-week introductory AI program</strong><br />
+<strong>Live prototype:</strong> https://myaiguru-trainer-assistant-ravi.onrender.com/<br />
+<strong>Local run:</strong> <code>python server.py</code> then open <code>http://127.0.0.1:8765/</code>. The dashboard uses fictional data in SQLite. Approvals and audit records persist between reloads on the local version. The course Q&amp;A retrieves approved sample answers from SQLite; no generative model or messaging service is connected. Render's free host can reset its demo database when it sleeps or restarts.</p>
+<h2>1. Problem and opportunity</h2>
+<p>MYAIGURU serves 120 learners across four batches with three trainers. Trainers prepare content, track attendance, review work, answer repeated questions and create progress reports manually. The starting indicators are 78% attendance, 62% on-time assignment submission and four days average feedback turnaround.</p>
+<p>The product opportunity is to reduce repetitive preparation and response work while making learner support more timely. AI can draft, summarize and surface patterns. Trainers remain accountable for curriculum, grading, learner outreach and every item shared with learners.</p>
+<h3>Stakeholders and current journey</h3>
+<table>
+<thead>
+<tr>
+<th>Stakeholder</th>
+<th>Current journey / need</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Learner</td>
+<td>Joins a live session, finds materials across channels, asks questions, submits an assignment and waits for feedback. Needs accessible explanations, timely help and clear expectations.</td>
+</tr>
+<tr>
+<td>Trainer</td>
+<td>Interprets the curriculum, prepares slides and exercises, takes attendance, answers repeated questions, reviews work and compiles reports. Needs less repetitive work and control over teaching quality.</td>
+</tr>
+<tr>
+<td>Program administrator</td>
+<td>Coordinates four batches and trainer coverage, tracks attendance/submissions and reports cohort health. Needs consistent, timely data and an audit trail.</td>
+</tr>
+<tr>
+<td>Curriculum owner</td>
+<td>Defines learning outcomes and approved materials. Needs generated content to remain aligned with the curriculum and current facts.</td>
+</tr>
+</tbody>
+</table>
+<h3>Key pain points</h3>
+<ol>
+<li>Repeated learner questions consume trainer time and answers may vary by batch.</li>
+<li>Assignment feedback takes four days on average, reducing its value while learners are still practicing.</li>
+<li>Manual content preparation and reporting make it hard to tailor examples by skill level or spot learners who may need support early.</li>
+<li>A dashboard signal alone cannot explain why a learner missed class or work; treating it as a diagnosis could harm trust.</li>
+</ol>
+<h3>Success measures</h3>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th style="text-align: right;">Baseline</th>
+<th style="text-align: right;">Initial target after 2 cohorts</th>
+<th>Why it matters / calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attendance rate</td>
+<td style="text-align: right;">78%</td>
+<td style="text-align: right;">85%</td>
+<td>Learner engagement; attended learner-sessions ÷ scheduled learner-sessions. Compare by batch and week.</td>
+</tr>
+<tr>
+<td>On-time assignment rate</td>
+<td style="text-align: right;">62%</td>
+<td style="text-align: right;">75%</td>
+<td>Practice completion; assignments submitted by due date ÷ assignments due. Segment by assignment and batch.</td>
+</tr>
+<tr>
+<td>Median feedback turnaround</td>
+<td style="text-align: right;">4 days average</td>
+<td style="text-align: right;">≤2 days median</td>
+<td>Feedback usefulness and trainer workload; time from submission to trainer-approved feedback. Track median and 90th percentile to avoid hiding delays.</td>
+</tr>
+</tbody>
+</table>
+<p>Targets are hypotheses to validate with administrators and trainers. Compare equivalent cohorts and do not attribute improvement to AI alone without a suitable evaluation design.</p>
+<h2>2. Discovery questions</h2>
+<ol>
+<li><strong>Trainer:</strong> Which parts of preparation, repeated questions and grading take the most time, and what must always remain your personal judgement?</li>
+<li><strong>Trainer:</strong> What rubric and feedback tone do you use? Which assignment types can safely receive a suggested draft, and which need a fully manual review?</li>
+<li><strong>Administrator:</strong> Where do attendance, submissions and learner rosters live today? Which system is the source of truth, and how often is it updated?</li>
+<li><strong>Administrator:</strong> What counts as a missed session, late submission or learner needing outreach? Who can see individual-level records, and what retention rules apply?</li>
+<li><strong>Learner:</strong> Where do you get stuck between sessions, and what makes it comfortable or uncomfortable to ask for help?</li>
+<li><strong>Learner:</strong> Which languages, device types, connectivity conditions and accessibility features do you need to participate fully?</li>
+<li><strong>All groups / curriculum owner:</strong> How do you approve course material, handle corrections and communicate a change to all four batches?</li>
+</ol>
+<h2>3. Redesigned workflow</h2>
+<ol>
+<li><strong>Prepare:</strong> Trainer selects a curriculum objective, audience and approved source documents. Assistant drafts a lesson outline, examples and quiz items with source references. Trainer checks factual accuracy, answer keys, level, language and accessibility before publishing.</li>
+<li><strong>Teach:</strong> Trainer delivers the session. Attendance is imported from the system of record or entered by an authorized trainer. Missing data is labelled “unknown,” never silently treated as absence.</li>
+<li><strong>Support between sessions:</strong> Learner asks a question. Assistant searches approved course content and returns an answer with source/module references. If evidence is missing or confidence is low, it says it cannot answer and routes the question to the trainer. Private learner records are not exposed in the general Q&amp;A.</li>
+<li><strong>Practice:</strong> Assistant may draft a quiz or hints tied to an objective. Trainer approves the questions and answer key. Learners receive accessible activities with a non-AI route to ask their trainer.</li>
+<li><strong>Review:</strong> Assistant drafts rubric-linked feedback without assigning a grade. Trainer checks correctness, tone and learner context, edits if needed, and explicitly approves before anything is shared.</li>
+<li><strong>Follow up:</strong> Dashboard surfaces attendance and submission patterns with missing-data indicators. Trainer reviews the context and writes any supportive outreach; AI never diagnoses motivation, disability or risk and never sends a message autonomously.</li>
+<li><strong>Report:</strong> Assistant drafts descriptive cohort summaries. Trainer verifies counts and interpretation. Reports show aggregated patterns by default; learner-level details are permission-controlled.</li>
+</ol>
+<h3>Human checkpoints and safeguards</h3>
+<ul>
+<li>No generated lesson, quiz, answer or feedback is shared before a named trainer approves it.</li>
+<li>Retrieval is limited to versioned, curriculum-approved sources. Every answer shows provenance; no source match means abstain/escalate.</li>
+<li>Trainers verify facts, answer keys, reading level, translations and examples. A change to approved source content is versioned and reviewed.</li>
+<li>No automated grades, pass/fail decisions, discipline, learner ranking or inferred personal traits.</li>
+<li>Use role-based access, least privilege, encrypted transport/storage, audit logs and retention limits. Collect only data required for teaching; use pseudonymous learner IDs in prompts and avoid personal details.</li>
+<li>Learners can ask for a human, report a harmful or incorrect answer, and access core content without using the assistant. Provide low-bandwidth, mobile-friendly and accessible alternatives.</li>
+<li>Before piloting with minors, obtain appropriate institutional/guardian consent, complete privacy review and define safeguarding escalation. The prototype uses fictional data only.</li>
+</ul>
+<h2>4. UI mockup and prompt choices</h2>
+<p>Run <code>python server.py</code> and open <code>http://127.0.0.1:8765/</code> for the interactive Trainer Workspace prototype. It includes cohort KPIs, batch filtering, AI suggestions, a lesson drafting workflow with required review checklist, learner pulse, feedback review, a course-grounded question demo and cohort insights. Responsive styling supports laptop and mobile layouts.</p>
+<p><img alt="Trainer Workspace dashboard mockup" src="dashboard.png" /></p>
+<p><strong>Example lesson prompt:</strong> “Using only the trainer-approved Module 2 source, draft a 60-minute beginner lesson for the objective [objective]. Include a warm-up, explanation, guided activity, three formative checks and an exit ticket. Label every generated item, cite the source section, use English with simple Hindi examples, and flag claims not supported by the source. Do not invent policy or assess a real learner.”</p>
+<p><strong>Example feedback prompt:</strong> “Compare this pseudonymized submission with the trainer-approved rubric. Draft two strengths and one next step in a supportive tone. Do not assign a grade, infer intent or add facts not in the rubric. Return evidence from the learner’s work and cite the rubric criterion. A trainer will review before release.”</p>
+<p>Design decisions: leading with cohort-level signals makes workload visible; missing data is separate from low performance; learner names are masked in the demo; AI suggestions carry explicit draft labels; approval checklists prevent accidental release; source tags make provenance visible; the copilot abstains when no approved-content match exists.</p>
+<p><strong>Prototype limitation:</strong> Lesson outlines are templates, and Q&amp;A uses a small approved-answer library in SQLite. The local server stores fictional demo data only and does not call an external AI model or send messages. A production system would need authentication, authorization, source ingestion/versioning, a stronger retrieval service, data retention controls and monitoring before any real learner data is used.</p>
+<h2>5. UAT scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Steps</th>
+<th>Expected outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incorrect AI answer</td>
+<td>Ask a question whose answer conflicts with the approved source, or whose source is absent.</td>
+<td>Assistant abstains or flags uncertainty, shows available source evidence, adds the question to trainer review and does not publish an answer. Trainer can correct the source-grounded response.</td>
+</tr>
+<tr>
+<td>Inappropriate or inaccurate lesson material</td>
+<td>Generate a lesson containing a questionable example or wrong quiz key; leave one checklist item unchecked and try to approve.</td>
+<td>Approval remains disabled until all checks are completed. Trainer can edit/remove the material; the learner receives nothing until approval. The change is logged.</td>
+</tr>
+<tr>
+<td>Learner privacy / access</td>
+<td>A trainer attempts to open another batch’s learner-level assignment feedback; a prompt includes identifiable personal details.</td>
+<td>Access is denied and logged for the unauthorized record. Prompt input warns against personal data and production service redacts/rejects it. Aggregated cohort metrics remain available to authorized roles.</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Seven-minute video outline</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>What to cover</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00–0:40</td>
+<td>Introduce the fictional program and the 78%, 62%, four-day baseline.</td>
+</tr>
+<tr>
+<td>0:40–1:30</td>
+<td>Walk through the learner/trainer journey and pain points.</td>
+</tr>
+<tr>
+<td>1:30–2:15</td>
+<td>Explain discovery questions and the three KPIs.</td>
+</tr>
+<tr>
+<td>2:15–3:15</td>
+<td>Demonstrate dashboard, batch filter and trainer focus suggestions.</td>
+</tr>
+<tr>
+<td>3:15–4:20</td>
+<td>Demonstrate lesson draft, source references and trainer checklist.</td>
+</tr>
+<tr>
+<td>4:20–5:10</td>
+<td>Show learner Q&amp;A and feedback review; call out abstention and human approval.</td>
+</tr>
+<tr>
+<td>5:10–6:00</td>
+<td>Explain privacy, incorrect content safeguards and UAT scenarios.</td>
+</tr>
+<tr>
+<td>6:00–7:00</td>
+<td>Teach the beginner concept below; close with prototype limits and next steps.</td>
+</tr>
+</tbody>
+</table>
+<h3>60-second beginner teaching demo: overfitting</h3>
+<p>“Imagine you study for a quiz by memorizing the exact practice questions and their answers. You may get those same questions right, but if the teacher changes the wording, you struggle. A machine-learning model can do the same thing: it can memorize patterns in its training examples instead of learning a useful general rule. That is called overfitting. We can check whether a model generalizes by testing it on examples it did not train on. A validation set helps us compare choices while we build the model; a separate test set is saved for a final, fair check. So the key idea is: good training performance is not enough—we also want the model to work on new examples.”</p>
+<h2>7. Tools and contribution</h2>
+<ul>
+<li><strong>Tools used:</strong> Codex for implementation support; HTML, CSS and JavaScript for the browser client; Python standard library and SQLite for the local API and persistent demo records. No external generative AI API is connected.</li>
+<li><strong>Candidate contribution statement:</strong> “I chose to present the learning-delivery case because it connects to my AI/ML and RAG project experience. I used Codex for idea development, writing support and implementation of the prototype. I recorded the video explanation in my own voice. I take responsibility for checking the workflow, KPIs, safeguards, UAT scenarios and UI and for explaining the choices and limitations accurately.”</li>
+</ul></body></html>
