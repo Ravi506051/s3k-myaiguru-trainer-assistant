@@ -4,7 +4,7 @@
 
 - [Live prototype](https://myaiguru-trainer-assistant-ravi.onrender.com/)
 - [Assessment PDF](S3K_Ravi_Kumar_Rao_Case_Study_01.pdf)
-- [Ravi's narrated case-study video](MYAIGURU_case_study_Ravi_voice.mp4)
+- [Ravi's narrated case-study video on Google Drive](https://drive.google.com/file/d/1ov5C_jgUtOg05RPnUPmDaRI1MJnN5Jvb/view) (access granted to S3K HR)
 
 An interactive browser prototype and case-study package for **S3K Case 01: AI-Powered Learning Delivery & Trainer Assistant**.
 
